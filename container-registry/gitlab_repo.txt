@@ -1,0 +1,2 @@
+registry K8s YAML: https://gitlab.com/openos1/OpenOSv1/-/tree/code-restructuring-beautification/v1_deploy/container-registry
+container registry DB: https://gitlab.com/openos1/OpenOSv1/-/tree/code-restructuring-beautification/services/dbs/container-registry

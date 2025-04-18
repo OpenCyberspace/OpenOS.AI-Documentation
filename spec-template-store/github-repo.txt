@@ -1,0 +1,2 @@
+Spec store: https://gitlab.com/openos1/OpenOSv1/-/tree/code-restructuring-beautification/services/dbs/spec_store
+Template store: https://gitlab.com/openos1/OpenOSv1/-/tree/code-restructuring-beautification/services/dbs/template_store

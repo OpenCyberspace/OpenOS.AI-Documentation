@@ -1,0 +1,3 @@
+metrics local DB: https://gitlab.com/openos1/OpenOSv1/-/tree/llm-rebase-v1/services/dbs/metrics
+metrics daemonset: https://gitlab.com/openos1/OpenOSv1/-/tree/llm-rebase-v1/services/metrics/daemonset
+global metrics dbs: https://gitlab.com/openos1/OpenOSv1/-/tree/llm-rebase-v1/services/dbs/global_metrics

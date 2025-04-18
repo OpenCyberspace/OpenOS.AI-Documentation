@@ -1,0 +1,1 @@
+https://gitlab.com/openos1/OpenOSv1/-/tree/code-restructuring-beautification/services/dbs/assets-db
