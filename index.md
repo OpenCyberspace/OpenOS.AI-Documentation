@@ -206,3 +206,53 @@ OpenOS.AI enables:
 3. 🐦 X (Twitter): [@opencyberspace](https://x.com/opencyberspace)
 
 ---
+
+## 🙋‍♀️ Call for Contributors
+ 
+**AIGrid** is an **open, collaborative project** — and we’re actively looking for contributors who resonate with the mission of building **open, plural, networked AI infrastructure**.
+
+---
+ 
+### 🧠 We Welcome:
+ 
+- **Systems thinkers** & **protocol designers**  
+  Help refine the architecture of **polycentric networks**
+ 
+- **Distributed systems engineers**  
+  Build and scale the **open execution layer**
+ 
+- **AI/ML developers**  
+  Create **interoperable cognitive modules** and **agent topologies**
+ 
+- **Researchers in ethics, governance, trust, alignment, guardrails, incentives, economics**  
+  Design and evolve the **policy layers**
+ 
+- **Writers & communicators**  
+  Help document, narrate, and **amplify the vision**
+ 
+- **Hackers, tinkerers, visionaries**  
+  If this speaks to you — you’re already one of us
+
+---
+
+### 🚀 Whether you want to:
+ 
+- Co-design **AI primitives**
+- Propose a **new kind of network**
+- Experiment with **governance models**
+- Help run a **sovereign AIGrid node, cluster, or network**
+ 
+We’d **love to hear from you.**
+ 
+---
+ 
+### 🔗 Join the Collective  
+
+[**Join our Discord**](https://discord.gg/W24vZFNB)
+ 
+### 📧 Reach Out [community@opencyberspace.org](mailto:community@opencyberspace.org)
+ 
+
+**Let’s co-create an open & networked AI future — plural, sovereign, and evolving.**
+
+---
