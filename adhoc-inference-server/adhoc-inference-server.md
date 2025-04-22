@@ -16,6 +16,9 @@ This server acts as a gateway for submitting tasks to a block or a graph of bloc
 
 ![adhoc-inference-server](../assets/adhoc-inference-server.png)
 
+([Download the architecture diagram](../assets/adhoc-inference-server.png))
+
+
 **High level flow**:
 
 1. An inference task is submitted via the gRPC API. A task has a `session_id`, sequence number, and either a target `block_id` specified or a search query that determines the block. The task can also specify a graph of blocks instead of a single block.

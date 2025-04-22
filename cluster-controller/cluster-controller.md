@@ -22,6 +22,8 @@ The **Cluster Controller** is a suite of services deployed by default on each cl
 
 ![Cluster Controller Architecture](../assets/cluster-controller-arch.png)
 
+([Download the architecture diagram](../assets/cluster-controller-arch.png))
+
 ---
 
 ### Components of the Cluster Controller

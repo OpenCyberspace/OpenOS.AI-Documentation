@@ -10,6 +10,8 @@ The writer and CRUD services can be scaled based on the load.
 
 ![global-tasks-db architecture](../assets/global-tasks-db.png)
 
+([Download the architecture diagram](../assets/global-tasks-db.png))
+
 
 ## Schema of the Global task DB:
 

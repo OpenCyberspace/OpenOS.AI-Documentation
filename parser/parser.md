@@ -22,6 +22,8 @@
 
 ![Parser](../assets/parser.png)
 
+([Download the architecture diagram](../assets/parser.png))
+
 ---
 
 ## Specification APIs:

@@ -10,6 +10,28 @@ Metrics system is responsible for collecting metrics from various components of 
 
 ---
 
+## Architecture
+
+![Metrics system](../assets/metrics-system.png)
+
+([Download the architecture diagram](../assets/metrics-system.png))
+
+### Components:
+
+#### **Cluster metrics components**:
+
+**1. Node hardware daemonsets**: These pods are deployed on all the nodes of the cluster by default, this pod runs in the host mode and is responsible for collecting all the metrics like CPU, memory, disk, network and GPU usage.
+
+**2. Metrics SDK and executor metrics module**: The metrics SDK provides capabilities to instrument custom metrics in the application and it is also integrated with the aios SDK to implement the built-in metrics, the metrics SDK is also configured to push metrics to the cluster's local metrics database periodically.
+
+**3. Local cluster metrics database**: Local cluster metrics database stores the current metrics of all the blocks and nodes in the cluster, **this DB only stores the current metrics and not time-series data**, the local metrics database is backed by prometheus deployment on the cluster which is optional, the prometheus deployment can be configured to store metrics for a long duration of time based on the local storage availability. Grafana charts can also be built on the prometheus metrics for observability.
+
+#### **Global metrics**
+
+**1. Global metrics databases**: Global metrics databases stores metrics reported from all the clusters, **this DB only stores the current metrics and not time-series data** and the global metrics databases are backed by prometheus deployment on the management cluster which is optional, the prometheus deployment can be configured to store metrics for a long duration of time based on the local storage availability. Grafana charts can also be built on the prometheus metrics for observability.
+
+---
+
 ## Hardware metrics:
 Hardware metrics are collected from clusters and nodes, hardware metrics capture the hardware utilization information like CPU usage, Memory usage, GPU usage etc.
 

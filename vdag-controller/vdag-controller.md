@@ -22,6 +22,8 @@ vDAG controller service is used for performing vDAG (virtual DAG - refer to the 
 
 ![vDAG-controller](../assets/vDAG-Controller.png)
 
+([Download the architecture diagram](../assets/vDAG-Controller.png))
+
 
 ### Task Submission Flow:
 

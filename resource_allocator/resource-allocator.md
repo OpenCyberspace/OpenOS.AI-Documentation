@@ -9,7 +9,10 @@ The Resource Allocator Server is designed to be generic and extensible, allowing
 
 ## Architecture of Resource allocator:
 
-![resource-allocator-architecture](../assets/resource-allocator.png)
+![resource-allocator-architecture](../assets/policy-system.png)
+
+
+([Download the architecture diagram](../assets/policy-system.png))
 
 ### Basic flow:
 

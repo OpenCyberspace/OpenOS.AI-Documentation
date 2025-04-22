@@ -181,6 +181,8 @@ Block the core component AIOSv1 responsible for instantiating, serving, scaling 
 
 ![block-components](../assets/block-arch.png)
 
+([Download the architecture diagram](../assets/block-arch.png))
+
 **Services of block**:
 
 1. **Executor**: Executor acts as a gateway for the block, tasks submitted to the block are load balanced using a load balancer policy, also implements executor metrics. Executors can't talk directly to the third party system, instead component instances are used as proxy.
@@ -264,6 +266,9 @@ Using this approach, an AIOS block can be linked with an external third-party sy
 ### Architecture:
 
 ![third-party-block](../assets/third-party-block.png)
+
+([Download the architecture diagram](../assets/third-party-block.png))
+
 
 **Services of block**:
 

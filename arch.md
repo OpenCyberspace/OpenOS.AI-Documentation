@@ -1,8 +1,9 @@
-# AIOSv1 Documentation
-
-## Architecture
+# Architecture
 
 ![aios-all-components](./assets/aios-all-arch.drawio.png)
+
+([Download the architecture diagram](./assets/aios-all-arch.drawio.png))
+
 
 ## Component Descriptions
 
@@ -13,6 +14,7 @@
 The Parser service acts as a gateway to create blocks, vDAGs, registry components, and clusters by submitting a specification JSON document. It applies a default standard specification but also allows users to define their own using templates from the registry and the policy system.
 
 [Documentation for Parser](./parser/parser.md)
+
 
 #### **Cluster Controller Gateway**
 

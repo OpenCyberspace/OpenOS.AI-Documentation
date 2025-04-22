@@ -14,6 +14,9 @@ Block the core component AIOSv1 responsible for instantiating, serving, scaling 
 
 ![block-components](../assets/block-arch.png)
 
+([Download the architecture diagram](../assets/block-arch.png))
+
+
 **Services of block**:
 
 1. **Executor**: Executor acts as a gateway for the block, tasks submitted to the block are load balanced using a load balancer policy, also implements executor metrics. Executors can't talk directly to the third party system, instead component instances are used as proxy.
@@ -154,7 +157,15 @@ if __name__ == "__main__":
 ---
 
 ## Block Load Balancer (Executor):
+
+
 Block load balancer distributes the requests across multiple available instances of the AI/Computational module. The load balancing logic cannot be pre-defined and fixed since different types of AI/Computational workloads follow different latency, throughput, resource utilization patterns, hence the load balancing policy can be used to implement the custom load balancing logic appropriate for the given type of AI/Computational workloads. This load balancing policy should map the given input task to one of the available instances, data points like current block metrics, cluster metrics and the block configuration information will be provided to the load balancer policy.
+
+### Architecture:
+
+![load-balancer](../assets/load-balancer.png)
+
+([Download the architecture diagram](../assets/load-balancer.png))
 
 Here is the basic structure of load balancer policy:
 
@@ -308,6 +319,13 @@ class AIOSv1PolicyRule:
 
 ## Block Auto-scaler:
 Block auto-scaler is deployed as a side-car which triggers the auto-scaler policy periodically based on the interval defined during the block creation (check Block creation spec). The auto-scaler policy is provided with the functions to obtain the current block and cluster metrics. The auto-scaler policy can then use this data to decide whether new instances should be added or the current instances should be removed because they are no longer in use. 
+
+### Architecture:
+
+![Autoscaler](../assets/autoscaler.png)
+
+([Download the architecture diagram](../assets/autoscaler.png))
+
 
 ```python
 class AIOSv1PolicyRule:
