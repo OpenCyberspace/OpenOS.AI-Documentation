@@ -47,13 +47,14 @@ curl -X POST http://<your-server-host>/executeFailurePolicy \
 ```python
 import requests
 import logging
+import os
 
-def call_failure_policy(api_url: str, failure_policy_id: str, inputs: dict, parameters: dict):
+def call_failure_policy(ailure_policy_id: str, inputs: dict, parameters: dict):
     """
     Calls the /executeFailurePolicy endpoint to execute a failure policy.
 
     Args:
-        api_url (str): Base URL of the failure policy server (e.g., http://<server-url>:8000).
+        api_url (str): Base URL of the failure policy server (e.g., http://<server-url>:8000) - taken from env.
         failure_policy_id (str): ID of the failure policy to execute.
         inputs (dict): Input payload for the policy.
         parameters (dict): Parameters for the policy.
@@ -62,6 +63,7 @@ def call_failure_policy(api_url: str, failure_policy_id: str, inputs: dict, para
         dict: Response from the server.
     """
     try:
+        failure_policy_server = os.getenv("FAILURE_POLICY_SERVER_URL")
         url = f"{api_url}/executeFailurePolicy"
         payload = {
             "failure_policy_id": failure_policy_id,
