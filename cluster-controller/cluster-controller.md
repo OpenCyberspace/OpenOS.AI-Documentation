@@ -723,6 +723,16 @@ Example:
             "node_id": "node-2",
             "status": "unhealthy",
             "cpu_utilization_percent": 25.0,
+            "gpus": [
+               {
+                  "id": 0,
+                  "utilization": 50.0,
+                  "memory":  {
+                      "total": 49152,
+                      "usage_percent": 40,
+                  },
+               }
+             ],
             "memory": {
             "total": 8192,
             "allocatable": 6144,
