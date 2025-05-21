@@ -182,6 +182,229 @@ class AIOSv1PolicyRule:
 
 ---
 
+## Pre-check policy inputs:
+
+### add_node
+
+```python
+{
+    "node_data": node_data,
+    "cluster_data": cluster,
+    "cluster_metrics": metrics
+}
+```
+
+1. `node_data` - data of the node being added
+2. `cluster_data` - data of the cluster to which the node is being added.
+3. `cluster_metrics` - metrics of the cluster to which the node is being added.
+
+**Sample node_data**:
+
+```json
+{
+  "clusterId": "cluster-west-vision-001",
+  "id": "node-1",
+  "gpus": {
+    "count": 2,
+    "memory": 32768,
+    "gpus": [
+      {
+        "modelName": "NVIDIA A100",
+        "memory": 16384
+      },
+      {
+        "modelName": "NVIDIA A100",
+        "memory": 16384
+      }
+    ],
+    "modelNames": [
+      "NVIDIA A100"
+    ],
+    "features": [
+      "tensor_cores"
+    ]
+  },
+  "vcpus": {
+    "count": 32
+  },
+  "memory": 131072,
+  "swap": 8192,
+  "storage": {
+    "disks": 2,
+    "size": 1048576
+  },
+  "network": {
+    "interfaces": 2,
+    "txBandwidth": 0,
+    "rxBandwidth": 0
+  },
+  "tags": [
+    "gpu",
+    "fp16",
+    "production"
+  ],
+  "nodeMetadata": {
+    "vendor": "Supermicro",
+    "location": "Rack 2 - DC1",
+    "notes": "Installed 2024-12"
+  }
+}
+```
+
+### remove_node
+
+```python
+{
+    "node_id": node_id,
+    "cluster_data": cluster,
+    "cluster_metrics": metrics,
+    "block_instances": []
+}
+```
+
+1. `node_id` - id of the node being removed
+2. `cluster_data` - data of the cluster to which the node is being removed.
+3. `cluster_metrics` - metrics of the cluster to which the node is being removed.
+3. `node_instances` - List of block_id that have instances on the current node being removed.
+
+### add_cluster
+
+```python
+{
+  "cluster_data": cluster
+}
+```
+
+1. `cluster_data`: Data of the cluster being added
+
+**Sample cluster data**:
+
+```python
+{
+  "id": "cluster-west-vision-001",
+  "regionId": "us-west-2",
+  "status": "live",
+  "nodes": {
+    "count": 2,
+    "nodeData": [
+      {
+        "id": "node-1",
+        "gpus": {
+          "count": 2,
+          "memory": 32768,
+          "gpus": [
+            { "modelName": "NVIDIA A100", "memory": 16384 },
+            { "modelName": "NVIDIA A100", "memory": 16384 }
+          ],
+          "features": ["fp16", "tensor_cores"],
+          "modelNames": ["NVIDIA A100"]
+        },
+        "vcpus": { "count": 32 },
+        "memory": 131072,
+        "swap": 8192,
+        "storage": {
+          "disks": 2,
+          "size": 1048576
+        },
+        "network": {
+          "interfaces": 2,
+          "txBandwidth": 10000,
+          "rxBandwidth": 10000
+        }
+      },
+      {
+        "id": "node-2",
+        "gpus": {
+          "count": 1,
+          "memory": 16384,
+          "gpus": [
+            { "modelName": "NVIDIA V100", "memory": 16384 }
+          ],
+          "features": ["fp16"],
+          "modelNames": ["NVIDIA V100"]
+        },
+        "vcpus": { "count": 16 },
+        "memory": 65536,
+        "swap": 4096,
+        "storage": {
+          "disks": 1,
+          "size": 524288
+        },
+        "network": {
+          "interfaces": 1,
+          "txBandwidth": 5000,
+          "rxBandwidth": 5000
+        }
+      }
+    ]
+  },
+  "gpus": {
+    "count": 3,
+    "memory": 49152
+  },
+  "vcpus": {
+    "count": 48
+  },
+  "memory": 196608,
+  "swap": 12288,
+  "storage": {
+    "disks": 3,
+    "size": 1572864
+  },
+  "network": {
+    "interfaces": 3,
+    "txBandwidth": 15000,
+    "rxBandwidth": 15000
+  },
+  "config": {
+    "policyExecutorId": "policy-exec-007",
+    "policyExecutionMode": "local",
+    "customPolicySystem": {
+      "name": "AdvancedPolicyRunner",
+      "version": "2.1.0"
+    },
+    "publicHostname": "cluster-west-vision-001.company.net",
+    "useGateway": true,
+    "actionsPolicyMap": {
+      "onScaleUp": "evaluate-gpu-availability",
+      "onFailure": "notify-admin"
+    }
+  },
+  "tags": ["gpu", "production", "ml", "vision", "us-west"],
+  "clusterMetadata": {
+    "name": "Sample cluster",
+    "vendor": "dma-bangalore",
+    "description": "Dedicated to serving large-scale computer vision models in production.",
+    "owner": "AI Infrastructure Team",
+    "email": "ai-infra@company.net",
+    "countries": ["USA", "Canada"],
+    "miscContactInfo": {
+      "pagerDuty": "https://sample-website/ai-clusters",
+      "slack": "#ml-infra"
+    },
+    "additionalInfo": {
+      
+    }
+  },
+  "reputation": 94
+}
+```
+
+### remove_cluster
+
+```json
+{
+  "cluster_data": cluster,
+  "cluster_metrics": cluster_metrics,
+  "cluster_blocks": []
+}
+```
+
+1. `cluster_data`: Data of the cluster being removed
+2. `cluster_metrics`: Metrics of the cluster being removed
+3. `cluster_blocks`: List of block ids scheduled on the current cluster
+
+
 ## API documentation:
 
 ### 1. Cluster entry read, update and delete APIs:
