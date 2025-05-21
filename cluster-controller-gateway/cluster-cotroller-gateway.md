@@ -404,6 +404,291 @@ class AIOSv1PolicyRule:
 2. `cluster_metrics`: Metrics of the cluster being removed
 3. `cluster_blocks`: List of block ids scheduled on the current cluster
 
+### add_block
+
+```
+{
+  "block_data": block,
+  "cluster_data": cluster,
+  "cluster_metrics": cluster_metrics
+}
+```
+
+### remove_block
+
+```
+{
+  "block_data": block,
+  "cluster_data": cluster,
+  "cluster_metrics": cluster_metrics,
+  "block_metrics": block_metrics,
+  "block_instance_nodes": []
+}
+```
+
+**Sample block data:**
+
+```json
+{
+  "blockId": "detector-yolo-88",
+  "blockComponentURI": "model.object-detector:2.0.0-stable",
+  "component": {
+    "componentId": {
+      "name": "vllm-chat",
+      "version": "1.0.0",
+      "releaseTag": "stable"
+    },
+    "componentType": "model",
+    "containerRegistryInfo": {
+      "containerImage": "registry.ai-platform.com/models/vllm-external-chat:2.0.0",
+      "containerRegistryId": "ai-platform-registry",
+      "containerImageMetadata": {
+        "author": "llm-team",
+        "description": "LLM team"
+      },
+      "componentMode": "third-party",
+      "initContainer": {
+        "containerImage": "registry.ai-platform.com/init-containers/vLLM-deployer:2.0.0",
+        "containerRegistryId": "ai-platform-registry",
+        "containerImageMetadata": {
+          "author": "vision-team",
+          "description": "Init container to deploy vLLM system"
+        }
+      }
+    },
+    "componentMetadata": {
+      "usecase": "chat-completion",
+      "framework": "external-api",
+      "hardware": "external"
+    },
+    "componentInitData": {
+      "vllm_server_url": "http://vllm-service:8080",
+      "model_name": "mistralai/Mistral-7B-Instruct-v0.1"
+    },
+    "componentInitParametersProtocol": {
+      "temperature": {
+        "type": "number",
+        "description": "Sampling temperature",
+        "min": 0,
+        "max": 2
+      }
+    },
+    "componentInitSettingsProtocol": {
+      "max_new_tokens": {
+        "type": "number",
+        "description": "Maximum number of tokens to generate",
+        "min": 1,
+        "max": 2048
+      }
+    },
+    "componentInputProtocol": {
+      "message": {
+        "type": "string",
+        "description": "Input message from the user"
+      },
+      "session_id": {
+        "type": "string",
+        "description": "Unique identifier for the chat session"
+      }
+    },
+    "componentOutputProtocol": {
+      "reply": {
+        "type": "string",
+        "description": "Chat reply from the vLLM model"
+      }
+    },
+    "componentParameters": {
+      "temperature": 0.7
+    },
+    "componentInitSettings": {
+      "max_new_tokens": 256
+    },
+    "componentManagementCommandsTemplate": {
+      "reset": {
+        "description": "Clears all stored chat sessions",
+        "args": {}
+      }
+    },
+    "tags": [
+      "vllm",
+      "chat",
+      "openai-compatible",
+      "mistral",
+      "llm"
+    ]
+  },
+  "minInstances": 1,
+  "maxInstances": 5,
+  "blockInitData": {
+    "weights_path": "/models/yolov5s.pt",
+    "device": "cuda"
+  },
+  "initSettings": {
+    "batch_size": 4,
+    "timeout_ms": 1000
+  },
+  "parameters": {
+    "confidence_threshold": 0.5,
+    "nms_threshold": 0.4
+  },
+  "policyRulesSpec": [
+    {
+      "values": {
+        "name": "clusterAllocator",
+        "policyRuleURI": "policy.clusterAllocator.yolo-cluster-selector:v1",
+        "parameters": {
+          "filter": {
+            "clusterMetricsQuery": {
+              "logicalOperator": "AND",
+              "conditions": [
+                {
+                  "variable": "cluster.vcpu.load_15m",
+                  "operator": "<",
+                  "value": "10"
+                },
+                {
+                  "variable": "cluster.gpu.totalFreeMem",
+                  "operator": ">",
+                  "value": "9000"
+                }
+              ]
+            },
+            "clusterQuery": {
+              "logicalOperator": "AND",
+              "conditions": [
+                {
+                  "variable": "gpus.count",
+                  "operator": ">",
+                  "value": "5"
+                },
+                {
+                  "variable": "clusterMetadata.vendor",
+                  "operator": "==",
+                  "value": "dma-bangalore"
+                }
+              ]
+            }
+          }
+        },
+        "settings": {
+          "max_candidates": 3
+        }
+      }
+    },
+    {
+      "values": {
+        "name": "resourceAllocator",
+        "policyRuleURI": "policy.resourceAllocator.yolo-gpu-scheduler:v0.0.1-beta",
+        "parameters": {
+          "gpus": 1,
+          "max_gpu_utilization": 0.8,
+          "min_gpu_free_memory": 5000
+        },
+        "settings": {
+          "selection_mode": "greedy"
+        }
+      }
+    },
+    {
+      "values": {
+        "name": "loadBalancer",
+        "policyRuleURI": "policy.loadBalancer.roundrobin:v0.0.1",
+        "parameters": {
+          "cache_sessions": true
+        },
+        "settings": {
+          "session_cache_size": 1000
+        }
+      }
+    },
+    {
+      "values": {
+        "name": "stabilityChecker",
+        "policyRuleURI": "policy.stabilityChecker.unhealthy-retry:v0.0.1",
+        "parameters": {
+          "unhealthy_threshold": 3
+        },
+        "settings": {
+          "check_interval_sec": 15
+        }
+      }
+    },
+    {
+      "values": {
+        "name": "autoscaler",
+        "policyRuleURI": "policy.autoscaler.gpu-based-autoscaler:v0.0.01",
+        "parameters": {
+          "target_cpu_utilization": 0.7
+        },
+        "settings": {
+          "scale_up_cooldown": 60,
+          "scale_down_cooldown": 120
+        }
+      }
+    }
+  ]
+}
+```
+
+### update_cluster
+
+```python
+{
+  "cluster_data": cluster
+}
+```
+
+### scale_block
+
+```python
+{
+  "block_data": block_data,
+  "input": scale_payload
+}
+```
+
+**Sample scale payload**
+
+```json
+{
+           "operation": "scale",
+           "block_id": <block-id>,
+           "instances_count": 2,
+           "allocation_data": [
+               {
+                   "node_id": <node_id>,
+                   "gpu_ids": [<gpu-ids>]
+               },
+               {
+                   "node_id": <node_id>,
+                   "gpu_ids": [<gpu-ids>]
+               }
+           ]
+}
+```
+
+### block_mgmt
+
+```python
+{
+  "block_data": block,
+  "input": mgmt_command_payload
+}
+```
+
+For management command information, refer to this [documentation](https://github.com/OpenCyberspace/OpenOS.AI-Documentation/blob/main/cluster-controller/cluster-controller.md#management-command-executor-apis)
+
+### cluster_mgmt
+
+```python
+{
+  "cluster_data": block,
+  "input": mgmt_command_payload
+}
+```
+
+For management command information, refer to this [documentation](https://github.com/OpenCyberspace/OpenOS.AI-Documentation/blob/main/cluster-controller/cluster-controller.md#management-command-executor-apis)
+
 
 ## API documentation:
 
