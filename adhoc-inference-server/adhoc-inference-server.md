@@ -612,6 +612,251 @@ curl -X GET "<server-url>/logs/session_block?session_id=<session_id>&block_id=<b
 
 ---
 
+## Quota checker policy:
+Quota checker policy provides the capability for the inference to restrict the usage of the inference API globally or per session_id.
+
+Quota checker policy is called every time a task is submitted to check if the quota constraints are satisfied.
+
+Quota checker module uses a redis cache backend to store the quota data, here is the definition of the class that manages the quota table:
+
+```python
+class QuotaManagement:
+    def __init__(self, redis_host="<server-url>", redis_port=6379, redis_db=0, quota_ttl=None):
+        """
+        Initializes the QuotaManagement instance with Redis connection details and an optional TTL.
+        Establishes a connection to Redis and tests it.
+        """
+        pass
+
+    def increment(self, session_id: str, amount: int = 1) -> int:
+        """
+        Increments the quota count for a given session ID by the specified amount.
+        If TTL is set, it refreshes the expiry time.
+        
+        Args:
+            session_id (str): Unique identifier for the session.
+            amount (int): Amount to increment the quota by.
+
+        Returns:
+            int: The updated quota value.
+        """
+        pass
+
+    def get(self, session_id: str) -> int:
+        """
+        Retrieves the current quota count for the specified session ID.
+        
+        Args:
+            session_id (str): Unique identifier for the session.
+
+        Returns:
+            int: The current quota value, or 0 if not found.
+        """
+        pass
+
+    def reset(self, session_id: str) -> None:
+        """
+        Resets the quota count for the specified session ID to zero.
+        
+        Args:
+            session_id (str): Unique identifier for the session.
+        """
+        pass
+
+    def clean(self) -> None:
+        """
+        Clears all quotas from the Redis database.
+        """
+        pass
+
+    def remove(self, session_id: str) -> None:
+        """
+        Deletes the quota entry for the specified session ID from Redis.
+        
+        Args:
+            session_id (str): Unique identifier for the session.
+        """
+        pass
+
+    def exists(self, session_id: str) -> bool:
+        """
+        Checks whether a quota entry exists for the specified session ID in Redis.
+        
+        Args:
+            session_id (str): Unique identifier for the session.
+
+        Returns:
+            bool: True if the session ID exists, False otherwise.
+        """
+        pass
+```
+
+---
+
+#### Writing the quota checker policy:
+
+Here is the structure of the input passed to the quota checker:
+
+```json
+{
+    // object of QuotaManagement class - used for accessing the quota table
+    "quota_table": <object of QuotaManagement>,
+    // input data in proto
+    "input": <object of vDAGInferencePacket - task input>,
+    // new quota - i.e current quota of that session_id + 1
+    "quota": <number (int) representing the updated quota, i.e current_quota + 1> ,
+    // session_id used in the task
+    "session_id": <string - session_id>
+}
+```
+The policy should return:
+
+```json
+{
+    "allowed": true
+}
+```
+`allow` should be set to `false` if the request can't be allowed due to unsatisfied quota constraints.
+
+Sample policy structure:
+
+```python
+class AIOSv1PolicyRule: 
+
+    def __init__(self, rule_id, settings, parameters): 
+
+        """ 
+            Initializes an AIOSv1PolicyRule instance. 
+            Args: 
+            rule_id (str): Unique identifier for the rule. 
+            settings (dict): Configuration settings for the rule. 
+            parameters (dict): Parameters defining the rule's behavior. 
+
+        """ 
+        self.rule_id = rule_id 
+        self.settings = settings 
+        self.parameters = parameters
+    
+    def eval(self, parameters, input_data, context): 
+
+        """ 
+            Evaluates the policy rule. 
+            This method should be implemented by subclasses to define the   rule's logic.  
+            It takes parameters, input data, and a context object to perform  evaluation. 
+            Args: 
+                parameters (dict): The current parameters. 
+                input_data (any): The input data to be evaluated. 
+                context (dict): Context (external cache), this can be used for  storing and accessing the state across multiple runs. 
+        """ 
+
+        """
+        {
+            // object of QuotaManagement class - used for accessing the quota table
+            "quota_table": <object of QuotaManagement>,
+            // input data in proto
+            "input": <object of vDAGInferencePacket - task input>,
+            // new quota - i.e current quota of that session_id + 1
+            "quota": <number (int) representing the updated quota, i.e current_quota + 1> ,
+            // session_id used in the task
+            "session_id": <string - session_id>
+        }
+        """
+        
+
+        return {
+            "allowed": True
+        }
+    
+    def management(self, action: str, data: dict) -> dict:
+        """
+        Executes a custom management command.
+
+        This method enables external interaction with the rule instance for purposes such as:
+        - updating settings or parameters
+        - fetching internal state
+        - diagnostics or lifecycle control
+
+        Args:
+            action (str): The management action to execute.
+            data (dict): Input payload or command arguments.
+
+        Returns:
+            dict: A result dictionary containing the status and any relevant details.
+        """
+        # Implement custom management actions here
+        pass
+
+```
+
+---
+
+#### Quota checker module APIs:
+
+**Endpoint:** `/quota/<session_id>`  
+**Method:** `GET`  
+**Description:**  
+Retrieves the current quota value for the given session.
+
+**Example curl Command:**
+```bash
+curl -X GET http://<server-url>/quota/session-1234
+```
+
+---
+
+**Endpoint:** `/quota/reset/<session_id>`  
+**Method:** `POST`  
+**Description:**  
+Resets the quota associated with the given session ID.
+
+**Example curl Command:**
+```bash
+curl -X POST http://<server-url>/quota/reset/session-1234
+```
+
+---
+
+**Endpoint:** `/quota/exists/<session_id>`  
+**Method:** `GET`  
+**Description:**  
+Checks whether a quota record exists for the given session ID.
+
+**Example curl Command:**
+```bash
+curl -X GET http://<server-url>/quota/exists/session-1234
+```
+
+---
+
+**Endpoint:** `/quota/<session_id>`  
+**Method:** `DELETE`  
+**Description:**  
+Removes the quota associated with the specified session ID.
+
+**Example curl Command:**
+```bash
+curl -X DELETE http://<server-url>/quota/session-1234
+```
+
+---
+
+**Endpoint:** `/quota/mgmt`  
+**Method:** `POST`  
+**Description:**  
+Executes a management command for quota operations. The `mgmt_action` defines the operation, and `mgmt_data` provides input to that action.
+
+**Example curl Command:**
+```bash
+curl -X POST http://<server-url>/quota/mgmt \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mgmt_action": "",
+    "mgmt_data": {}
+  }'
+```
+
+---
+
 ## Inference Server Registry
 The Inference Server Registry is used to list all inference servers for search and discovery purposes. Users can add their inference servers to this global registry if they want them to be publicly accessible.
 
