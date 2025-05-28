@@ -139,6 +139,31 @@ class AIOSv1PolicyRule:
 
 ---
 
+### add_vdag_controller input data
+
+```json
+{
+    "vdag_data": {},
+    "cluster_data": {},
+    "cluster_metrics": {},
+    "node_id": ""
+}
+```
+
+### remove_vdag_controller input data
+
+```json
+{
+    "vdag_data": {},
+    "vdag_controller_data": {},
+    "cluster_data": {},
+    "cluster_metrics": {},
+    "node_id": ""
+}
+```
+
+---
+
 ## Cluster controller components API documentation:
 ### Infra-management APIs:
 
