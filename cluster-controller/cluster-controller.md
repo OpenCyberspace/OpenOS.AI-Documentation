@@ -146,7 +146,8 @@ class AIOSv1PolicyRule:
     "vdag_data": {},
     "cluster_data": {},
     "cluster_metrics": {},
-    "node_id": ""
+    "node_id": "",
+    "input_data": {}
 }
 ```
 
