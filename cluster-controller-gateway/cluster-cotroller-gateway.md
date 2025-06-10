@@ -672,7 +672,12 @@ class AIOSv1PolicyRule:
 ```python
 {
   "block_data": block,
-  "input": mgmt_command_payload
+  "input": {
+      "action": "set_iou",
+      "payload": {
+          "value": 0.9
+      }
+  } 
 }
 ```
 
@@ -682,8 +687,11 @@ For management command information, refer to this [documentation](https://github
 
 ```python
 {
-  "cluster_data": block,
-  "input": mgmt_command_payload
+  "cluster_data": cluster,
+  "input": {
+      "action": action_name,
+      "payload": {}
+  }
 }
 ```
 
